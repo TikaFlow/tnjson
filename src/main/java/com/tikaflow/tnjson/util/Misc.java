@@ -5,8 +5,16 @@ public class Misc {
         return c >= '0' && c <= '9';
     }
 
+    public static boolean isLower(char c) {
+        return c >= 'a' && c <= 'z';
+    }
+
+    public static boolean isUpper(char c) {
+        return c >= 'A' && c <= 'Z';
+    }
+
     public static boolean isAlpha(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+        return isLower(c) || isUpper(c);
     }
 
     public static boolean isAlphaNum(char c) {

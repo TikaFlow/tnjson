@@ -14,6 +14,24 @@ public class Element<T> {
     @Getter
     private T value;
 
+    public Class<?> getType() {
+        switch (type) {
+            case STRING:
+                return String.class;
+            case NUMBER:
+                return Double.class;
+            case OBJECT:
+                return JSONObject.class;
+            case ARRAY:
+                return JSONArray.class;
+            case BOOLEAN:
+                return Boolean.class;
+            case NULL:
+            default:
+                return null;
+        }
+    }
+
     public Element() {
         this.type = NULL;
     }
@@ -60,6 +78,21 @@ public class Element<T> {
             case NULL:
             default:
                 return "null";
+        }
+    }
+
+    public String format(String indent) {
+        switch (type) {
+            case OBJECT:
+                return ((JSONObject) value).format(indent);
+            case ARRAY:
+                return ((JSONArray) value).format(indent);
+            case STRING:
+            case NUMBER:
+            case BOOLEAN:
+            case NULL:
+            default:
+                return toString();
         }
     }
 }

@@ -41,6 +41,18 @@ public class JSONArray {
         return this;
     }
 
+    public Object at(int index) {
+        return items.get(index).getValue();
+    }
+
+    public Class<?> typeAt(int index) {
+        return items.get(index).getType();
+    }
+
+    public int length() {
+        return items.size();
+    }
+
     public String toString() {
         return items.toString();
     }
@@ -54,22 +66,9 @@ public class JSONArray {
 
         val itemIndent = indent + "    ";
         for (var item : items) {
-            sb.append(itemIndent);
-
-            val value = item.getValue();
-            if (value instanceof JSONObject) {
-                sb.append(((JSONObject) value).format(itemIndent));
-            } else if (value instanceof JSONArray) {
-                sb.append(((JSONArray) value).format(itemIndent));
-            } else if (value instanceof String) {
-                sb.append("\"")
-                        .append(((String) value))
-                        .append("\"");
-            } else {
-                sb.append(item.getValue());
-            }
-
-            sb.append(",\n");
+            sb.append(itemIndent)
+                    .append(item.format(itemIndent))
+                    .append(",\n");
         }
         if (sb.length() > 1) {
             sb.delete(sb.length() - 2, sb.length());
