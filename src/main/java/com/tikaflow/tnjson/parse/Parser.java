@@ -46,10 +46,7 @@ public class Parser {
         return token;
     }
 
-    private void parseItem(JSONObject obj) {
-        val key = match(STRING, "key").getContent();
-        match(COLON, "colon");
-
+    private Object parseElement() {
         val token = next();
         if (token == null) {
             throw new RuntimeException("expect value but got EOF");
@@ -58,65 +55,29 @@ public class Parser {
         switch (token.getType()) {
             case LEFT_BRACE:
                 eat();
-                obj.put(key, parseObject());
-                break;
+                return parseObject();
             case LEFT_BRACKET:
                 eat();
-                obj.put(key, parseArray());
-                break;
+                return parseArray();
             case STRING:
-                obj.put(key, token.getContent());
-                break;
+                return token.getContent();
             case NUMBER:
-                obj.put(key, token.getValue());
-                break;
+                return token.getValue();
             case TRUE:
-                obj.put(key, true);
-                break;
+                return true;
             case FALSE:
-                obj.put(key, false);
-                break;
+                return false;
             case NULL:
-                obj.putNull(key);
-                break;
+                return null;
             default:
                 throw new RuntimeException("expect value but got: " + token);
         }
     }
 
-    private void parseElement(JSONArray arr) {
-        val token = next();
-        if (token == null) {
-            throw new RuntimeException("expect value but got EOF");
-        }
-
-        switch (token.getType()) {
-            case LEFT_BRACE:
-                eat();
-                arr.push(parseObject());
-                break;
-            case LEFT_BRACKET:
-                eat();
-                arr.push(parseArray());
-                break;
-            case STRING:
-                arr.push(token.getContent());
-                break;
-            case NUMBER:
-                arr.push(token.getValue());
-                break;
-            case TRUE:
-                arr.push(true);
-                break;
-            case FALSE:
-                arr.push(false);
-                break;
-            case NULL:
-                arr.pushNull();
-                break;
-            default:
-                throw new RuntimeException("expect value but got: " + token);
-        }
+    private void parseItem(JSONObject obj) {
+        val key = match(STRING, "key").getContent();
+        match(COLON, "colon");
+        obj.putOne(key, parseElement());
     }
 
     public JSONObject parseObject() {
@@ -157,7 +118,7 @@ public class Parser {
         if (token.getType() != RIGHT_BRACKET) {
             while (true) {
                 // parse element and add
-                parseElement(arr);
+                arr.addOne(parseElement());
 
                 token = next();
                 if (token == null || token.getType() != COMMA) {

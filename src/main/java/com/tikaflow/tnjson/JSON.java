@@ -1,9 +1,10 @@
-package com.tikaflow.tnjson.util;
+package com.tikaflow.tnjson;
 
 import com.tikaflow.tnjson.json.JSONObject;
 import com.tikaflow.tnjson.json.JSONArray;
 import com.tikaflow.tnjson.parse.Lexer;
 import com.tikaflow.tnjson.parse.Parser;
+import com.tikaflow.tnjson.util.Misc;
 import lombok.val;
 import lombok.var;
 

@@ -1,46 +1,25 @@
 package com.tikaflow.tnjson.json;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
+import com.tikaflow.tnjson.JSON;
+import com.tikaflow.tnjson.bean.Element;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
-import com.tikaflow.tnjson.bean.Element;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class JSONObject {
-    private final HashMap<String, Element<?>> items = new HashMap<>();
+@EqualsAndHashCode(callSuper = false)
+public class JSONObject extends JSON implements Map<String, Object> {
+    private final HashMap<String, Element<Object>> items = new HashMap<>();
 
-    public JSONObject put(String key, JSONObject obj) {
-        items.put(key, new Element<>(obj));
-        return this;
-    }
-
-    public JSONObject put(String key, JSONArray arr) {
-        items.put(key, new Element<>(arr));
-        return this;
-    }
-
-    public JSONObject put(String key, String str) {
-        items.put(key, new Element<>(str));
-        return this;
-    }
-
-    public JSONObject put(String key, double num) {
-        items.put(key, new Element<>(num));
-        return this;
-    }
-
-    public JSONObject put(String key, boolean bool) {
-        items.put(key, new Element<>(bool));
-        return this;
-    }
-
-    public JSONObject putNull(String key) {
-        items.put(key, new Element<>());
+    public JSONObject putOne(String key, Object obj) {
+        put(key, obj);
         return this;
     }
 
@@ -190,5 +169,70 @@ public class JSONObject {
 
     public String format() {
         return format("");
+    }
+
+    @Override
+    public int size() {
+        return items.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return items.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return items.containsValue(new Element<>(value));
+    }
+
+    @Override
+    public Object get(Object key) {
+        return items.get(key);
+    }
+
+    @Override
+    public Object put(String key, Object value) {
+        return items.put(key, new Element<>(value));
+    }
+
+    @Override
+    public Object remove(Object key) {
+        return items.remove(key);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ?> m) {
+        for (var item : m.entrySet()) {
+            put(item.getKey(), item.getValue());
+        }
+    }
+
+    @Override
+    public void clear() {
+        items.clear();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return items.keySet();
+    }
+
+    @Override
+    public Collection<Object> values() {
+        return Collections.singleton(items.values());
+    }
+
+    @Override
+    public Set<Entry<String, Object>> entrySet() {
+        return items.entrySet()
+                .stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), (Object) e.getValue()))
+                .collect(Collectors.toSet());
     }
 }

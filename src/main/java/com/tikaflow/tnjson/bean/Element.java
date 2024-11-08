@@ -4,11 +4,13 @@ import com.tikaflow.tnjson.json.JSONArray;
 import com.tikaflow.tnjson.json.JSONObject;
 import com.tikaflow.tnjson.type.ElementType;
 import com.tikaflow.tnjson.util.Misc;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.val;
 
 import static com.tikaflow.tnjson.type.ElementType.*;
 
+@EqualsAndHashCode
 public class Element<T> {
     private final ElementType type;
     @Getter
@@ -32,10 +34,6 @@ public class Element<T> {
         }
     }
 
-    public Element() {
-        this.type = NULL;
-    }
-
     public Element(T value) {
         if (value == null) {
             this.type = NULL;
@@ -48,10 +46,10 @@ public class Element<T> {
             this.type = ARRAY;
         } else if (value instanceof String) {
             this.type = STRING;
-        } else if (value instanceof Double) {
-            this.type = NUMBER;
         } else if (value instanceof Boolean) {
             this.type = BOOLEAN;
+        } else if (Number.class.isAssignableFrom(value.getClass())) {
+            this.type = NUMBER;
         } else {
             this.type = NULL;
             return;
